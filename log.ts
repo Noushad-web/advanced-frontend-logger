@@ -145,9 +145,13 @@ class Log {
       const logEntry = this.logQueue.shift();
       if (logEntry) {
         const { level, message, meta } = logEntry;
-        this.config.transports.forEach((transport) =>
-          transport.log(level, message, meta)
-        );
+        this.config.transports.forEach((transport) => {
+          try {
+            transport.log(level, message, meta);
+          } catch (error) {
+            console.error('Transport logging failed:', error);
+          }
+        });        
       }
     }
 
